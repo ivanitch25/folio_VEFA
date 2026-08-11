@@ -48,6 +48,14 @@ const stories = [
   },
 ];
 
+const routineSteps = [
+  { label: "Chercher", detail: "Retrouver le bon dossier" },
+  { label: "Copier", detail: "Reprendre les coordonnées" },
+  { label: "Calculer", detail: "Déterminer le montant dû" },
+  { label: "Renommer", detail: "Identifier chaque document" },
+  { label: "Classer", detail: "Déposer au bon endroit" },
+];
+
 function Mark() {
   return <span className="folio-mark" aria-hidden="true">F</span>;
 }
@@ -61,6 +69,41 @@ function ProductFrame({ src, alt, eager = false }: { src: string; alt: string; e
       </div>
       <Image src={src} alt={alt} width={1280} height={720} priority={eager} unoptimized />
     </div>
+  );
+}
+
+function RoutineCard({ label, detail, index }: { label: string; detail: string; index: number }) {
+  return (
+    <motion.article
+      className="routine-card"
+      initial={{ opacity: 0, y: 28 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: .55 }}
+      transition={{ duration: .55, delay: index * .07, ease: [0.16, 1, 0.3, 1] }}
+    >
+      <div className="routine-card__top"><span>0{index + 1}</span><i /></div>
+      <strong>{label}</strong>
+      <small>{detail}</small>
+    </motion.article>
+  );
+}
+
+function Manifesto() {
+  return (
+    <section className="manifesto" id="vision">
+      <div className="manifesto__head">
+        <div><span className="section-index">00 — Le vrai coût</span><p>Ce ne sont pas seulement les dossiers difficiles qui prennent du temps.</p></div>
+        <motion.h2 initial={{ opacity: 0, y: 35 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: .45 }} transition={{ duration: .7, ease: [0.16, 1, 0.3, 1] }}>Le travail se disperse dans <em>la répétition.</em></motion.h2>
+      </div>
+      <div className="manifesto__routine" aria-label="Les cinq gestes répétitifs pris en charge par Folio">
+        {routineSteps.map((step, index) => <RoutineCard key={step.label} {...step} index={index} />)}
+      </div>
+      <motion.div className="manifesto__compare" initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: .5 }} transition={{ duration: .65, delay: .15, ease: [0.16, 1, 0.3, 1] }}>
+        <article><span>Sans Folio</span><strong>5 gestes à répéter pour chaque client</strong></article>
+        <i aria-hidden="true">→</i>
+        <article className="manifesto__compare-result"><span>Avec Folio</span><strong>1 contrôle, puis les documents sont prêts</strong></article>
+      </motion.div>
+    </section>
   );
 }
 
@@ -105,13 +148,7 @@ export function FolioStory() {
         </motion.div>
       </section>
 
-      <section className="manifesto" id="vision">
-        <span className="section-index">00 — La conviction</span>
-        <p>Le temps ne se perd pas seulement dans les cas difficiles.</p>
-        <h2>Il se perd dans les mêmes gestes, répétés client après client.</h2>
-        <div className="manifesto__line"><span>chercher</span><i /><span>copier</span><i /><span>calculer</span><i /><span>renommer</span><i /><span>classer</span></div>
-        <p className="manifesto__answer">Folio prépare cette mécanique. Le comptable garde le contrôle.</p>
-      </section>
+      <Manifesto />
 
       <section className="story" id="parcours">
         <div className="story__intro"><span className="section-index">01 — Le parcours réel</span><h2>Quatre écrans.<br />Une journée plus légère.</h2><p>Faites défiler, puis ouvrez la démo : chaque écran montré ici appartient au logiciel fonctionnel.</p></div>
@@ -123,6 +160,8 @@ export function FolioStory() {
                 key={item.id}
                 onViewportEnter={() => setActiveStory(index)}
                 viewport={{ amount: .55 }}
+                animate={{ opacity: activeStory === index ? 1 : .22, x: activeStory === index ? 0 : -18 }}
+                transition={{ duration: .45, ease: [0.16, 1, 0.3, 1] }}
               >
                 <span className="story-step__number">{item.number}</span>
                 <div><span className="story-step__kicker">{item.kicker}</span><h3>{item.title}</h3><p>{item.body}</p><strong><i />{item.proof}</strong></div>
@@ -131,9 +170,15 @@ export function FolioStory() {
           </div>
           <div className="story__sticky" aria-live="polite">
             <motion.div className="story__visual-motion" style={{ y: storyScreenY, scale: storyScreenScale, rotateX: storyScreenRotateX }}>
-              <div className="story__screen">
+              <div className="story__visual-head">
                 <AnimatePresence mode="wait">
-                  <motion.div key={stories[activeStory].id} initial={{ opacity: 0, y: 34, scale: .97, filter: "blur(5px)" }} animate={{ opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }} exit={{ opacity: 0, y: -24, scale: .985, filter: "blur(3px)" }} transition={{ duration: reduceMotion ? 0 : .62, ease: [0.16, 1, 0.3, 1] }}>
+                  <motion.div key={stories[activeStory].id} initial={{ opacity: 0, x: 18 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -12 }} transition={{ duration: reduceMotion ? 0 : .3 }}><b>{stories[activeStory].number}</b><span>{stories[activeStory].kicker}</span></motion.div>
+                </AnimatePresence>
+                <span><i />Capture réelle du logiciel</span>
+              </div>
+              <div className="story__screen">
+                <AnimatePresence mode="popLayout">
+                  <motion.div key={stories[activeStory].id} initial={{ opacity: 0, x: reduceMotion ? 0 : 95, y: reduceMotion ? 0 : 24, scale: reduceMotion ? 1 : .92, rotateY: reduceMotion ? 0 : -5, clipPath: "inset(3% 5% 3% 5% round 16px)" }} animate={{ opacity: 1, x: 0, y: 0, scale: 1, rotateY: 0, clipPath: "inset(0% 0% 0% 0% round 13px)" }} exit={{ opacity: 0, x: reduceMotion ? 0 : -75, y: reduceMotion ? 0 : -16, scale: reduceMotion ? 1 : .97, rotateY: reduceMotion ? 0 : 3 }} transition={{ duration: reduceMotion ? 0 : .72, ease: [0.16, 1, 0.3, 1] }}>
                     <ProductFrame src={stories[activeStory].image} alt={stories[activeStory].alt} />
                     {!reduceMotion && <motion.i className="story__screen-light" aria-hidden="true" initial={{ x: "-130%" }} animate={{ x: "140%" }} transition={{ duration: .9, ease: [0.16, 1, 0.3, 1] }} />}
                   </motion.div>
