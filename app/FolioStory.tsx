@@ -3,6 +3,7 @@
 import { AnimatePresence, motion, useReducedMotion, useScroll, useSpring, useTransform } from "framer-motion";
 import Image from "next/image";
 import { useState } from "react";
+import { RoutePortal, RouteTransitionLink } from "./RouteTransition";
 
 const stories = [
   {
@@ -74,6 +75,7 @@ export function FolioStory() {
   return (
     <main>
       <motion.div className="scroll-progress" style={{ scaleX: progress }} />
+      <RoutePortal href="/demo" side="right" eyebrow="Explorer" label="Démo interactive" />
       <header className="site-header">
         <a className="wordmark" href="#haut" aria-label="Folio VEFA, accueil"><Mark /><span>Folio <b>VEFA</b></span></a>
         <nav aria-label="Navigation principale">
@@ -81,7 +83,7 @@ export function FolioStory() {
           <a href="#confidentialite">Confidentialité</a>
           <a href="#vision">La promesse</a>
         </nav>
-        <a className="nav-cta" href="/demo">Essayer la démo <span aria-hidden="true">↗</span></a>
+        <RouteTransitionLink className="nav-cta" href="/demo" side="right">Essayer la démo <span aria-hidden="true">↗</span></RouteTransitionLink>
       </header>
 
       <section className="hero" id="haut">
@@ -89,7 +91,7 @@ export function FolioStory() {
           <div className="hero__eyebrow"><span>Conçu avec le métier</span><i />Logiciel local pour comptables VEFA</div>
           <h1>Moins de dossiers à fouiller.<br /><em>Plus de travail déjà prêt.</em></h1>
           <p>Folio réunit chaque client, prépare ses appels de fonds et génère ses courriers personnalisés — sans envoyer ses données sensibles sur le web.</p>
-          <div className="hero__actions"><a className="primary-link" href="/demo">Manipuler le logiciel <span aria-hidden="true">↗</span></a><a className="text-link" href="#parcours">Voir le parcours <span aria-hidden="true">↓</span></a><span className="local-proof"><i />Démo fictive · produit réel en local</span></div>
+          <div className="hero__actions"><RouteTransitionLink className="primary-link" href="/demo" side="right">Manipuler le logiciel <span aria-hidden="true">↗</span></RouteTransitionLink><a className="text-link" href="#parcours">Voir le parcours <span aria-hidden="true">↓</span></a><span className="local-proof"><i />Démo fictive · produit réel en local</span></div>
         </motion.div>
         <motion.div className="hero__product" style={{ y: heroY, scale: heroScale }} initial={{ opacity: 0, y: 34 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: .25, duration: .9, ease: [0.16, 1, 0.3, 1] }}>
           <ProductFrame src="/screens/dashboard.png" alt={stories[0].alt} eager />
@@ -154,7 +156,7 @@ export function FolioStory() {
         <span>Folio VEFA</span>
         <h2>Le logiciel prépare.<br /><em>Vous décidez.</em></h2>
         <p>Un outil local, pensé autour de chaque client et des documents que vous devez réellement produire.</p>
-        <a className="primary-link primary-link--light" href="/demo">Ouvrir la démo interactive <span aria-hidden="true">↗</span></a>
+        <RouteTransitionLink className="primary-link primary-link--light" href="/demo" side="right">Ouvrir la démo interactive <span aria-hidden="true">↗</span></RouteTransitionLink>
       </section>
 
       <footer><a className="wordmark wordmark--footer" href="#haut"><Mark /><span>Folio <b>VEFA</b></span></a><p>Logiciel local d’assistance comptable VEFA.</p><span>La démo utilise exclusivement des données fictives.</span></footer>

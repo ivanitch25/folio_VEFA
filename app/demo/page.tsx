@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import { RoutePortal, RouteTransitionLink } from "../RouteTransition";
 
 export const metadata: Metadata = {
   title: "Démo interactive",
@@ -9,8 +9,9 @@ export const metadata: Metadata = {
 export default function DemoPage() {
   return (
     <main className="demo-page">
+      <RoutePortal href="/" side="left" eyebrow="Retour" label="Site vitrine" />
       <header className="demo-topbar">
-        <Link className="demo-topbar__back" href="/">← Revenir à la présentation</Link>
+        <RouteTransitionLink className="demo-topbar__back" href="/" side="left">← Revenir à la présentation</RouteTransitionLink>
         <div className="demo-topbar__message"><i />Vous manipulez une simulation : aucune donnée saisie ici n’est conservée.</div>
         <span className="demo-topbar__badge">Données 100 % fictives</span>
       </header>
