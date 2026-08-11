@@ -170,9 +170,22 @@ button, input { font: inherit; }
 .text-link span { color: var(--accent); }
 .text-link:hover { color: var(--accent); border-color: var(--accent); }
 
-.route-portal-shell { position: fixed; z-index: 90; top: 50%; transform: translateY(-50%); }
+@media (min-width: 1101px) {
+  .hero { min-height: 1040px; padding-top: 142px; }
+  .hero__copy { max-width: 1300px; display: grid; grid-template-columns: minmax(0, 1.38fr) minmax(330px, .62fr); grid-template-rows: auto auto auto; column-gap: clamp(58px, 7vw, 110px); align-items: start; text-align: left; }
+  .hero__eyebrow { grid-column: 1 / -1; margin: 0 0 32px; }
+  .hero h1 { grid-column: 1; grid-row: 2 / span 2; max-width: 860px; font-size: clamp(58px, 4.55vw, 76px); line-height: .91; }
+  .hero h1 span, .hero h1 em { white-space: normal; }
+  .hero__copy > p { grid-column: 2; grid-row: 2; max-width: 420px; margin: 7px 0 27px; font-size: 17px; line-height: 1.7; }
+  .hero__actions { grid-column: 2; grid-row: 3; justify-content: flex-start; flex-wrap: wrap; gap: 15px 20px; }
+  .hero__actions .local-proof { flex-basis: 100%; margin-top: 4px; }
+  .hero__product { max-width: 1320px; margin-top: 58px; }
+}
+
+.route-portal-shell { position: fixed; z-index: 90; top: 50%; transform: translateY(-50%); transition: top .42s cubic-bezier(.22,1,.36,1), transform .42s cubic-bezier(.22,1,.36,1); }
 .route-portal-shell--right { right: 22px; }
 .route-portal-shell--left { left: 22px; }
+.route-portal-shell--docked.route-portal-shell--right { top: 96px; transform: translateY(0); }
 .route-portal { min-width: 176px; height: 72px; padding: 8px 9px 8px 22px; border-radius: 19px; background: rgba(20, 33, 28, .95); color: white; text-decoration: none; display: flex; align-items: center; justify-content: space-between; gap: 17px; border: 1px solid rgba(255,255,255,.12); box-shadow: 0 18px 45px rgba(14,24,20,.2); backdrop-filter: blur(12px); }
 .route-portal strong { white-space: nowrap; font-size: 12.5px; line-height: 1; letter-spacing: .015em; font-weight: 680; }
 .route-portal i { width: 54px; height: 54px; flex: 0 0 54px; border-radius: 14px; display: grid; place-items: center; background: var(--accent); color: white; font: normal 34px/1 var(--sans); box-shadow: 0 8px 20px rgba(229, 89, 61, .28); transition: transform .22s ease; }
@@ -239,6 +252,7 @@ footer > span { text-align: right; }
 
 @media (max-width: 640px) {
   .route-portal-shell { top: auto; bottom: 18px; transform: none; }
+  .route-portal-shell--docked.route-portal-shell--right { top: auto; transform: none; }
   .route-portal-shell--right { right: 16px; }
   .route-portal-shell--left { left: 16px; }
   .route-portal, .route-portal-shell--left .route-portal { min-width: 151px; height: 58px; padding: 7px 8px 7px 17px; border-radius: 16px; gap: 12px; }

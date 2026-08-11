@@ -3,7 +3,7 @@
 import { AnimatePresence, motion, useMotionValueEvent, useReducedMotion, useScroll, useSpring, useTransform } from "framer-motion";
 import Image from "next/image";
 import { useRef, useState } from "react";
-import { RouteTransitionLink } from "./RouteTransition";
+import { RoutePortal, RouteTransitionLink } from "./RouteTransition";
 
 const stories = [
   {
@@ -109,6 +109,7 @@ function Manifesto() {
 
 export function FolioStory() {
   const [{ index: activeStory, direction: storyDirection }, setStoryState] = useState({ index: 0, direction: 1 });
+  const [portalDocked, setPortalDocked] = useState(false);
   const storySequenceRef = useRef<HTMLDivElement>(null);
   const reduceMotion = useReducedMotion();
   const { scrollYProgress } = useScroll();
@@ -121,10 +122,15 @@ export function FolioStory() {
     const plateau = Math.min(stories.length - 1, Math.floor(Math.min(value, .9999) * stories.length));
     selectStory(plateau);
   });
+  useMotionValueEvent(scrollYProgress, "change", value => setPortalDocked(previous => {
+    const next = value > .115;
+    return previous === next ? previous : next;
+  }));
 
   return (
     <main>
       <motion.div className="scroll-progress" style={{ scaleX: progress }} />
+      <RoutePortal href="/demo" side="right" label="Voir la démo" className={portalDocked ? "route-portal-shell--docked" : undefined} />
       <header className="site-header">
         <a className="wordmark" href="#haut" aria-label="Folio VEFA, accueil"><Mark /><span>Folio <b>VEFA</b></span></a>
         <nav aria-label="Navigation principale">

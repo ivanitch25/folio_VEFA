@@ -44,7 +44,7 @@ export function RouteTransitionLink({ href, side, className, children }: { href:
   return <>{overlay}<a className={className} href={href} onClick={navigate}>{children}</a></>;
 }
 
-export function RoutePortal({ href, side, label }: { href: string; side: Side; label: string }) {
+export function RoutePortal({ href, side, label, className }: { href: string; side: Side; label: string; className?: string }) {
   const { navigate, overlay } = useRouteChange(href, side);
-  return <>{overlay}<div className={`route-portal-shell route-portal-shell--${side}`}><motion.a className="route-portal" href={href} onClick={navigate} aria-label={label} whileHover={{ x: side === "right" ? -6 : 6 }} whileTap={{ scale: .96 }}>{side === "left" && <i aria-hidden="true">←</i>}<strong>{label}</strong>{side === "right" && <i aria-hidden="true">→</i>}</motion.a></div></>;
+  return <>{overlay}<div className={`route-portal-shell route-portal-shell--${side}${className ? ` ${className}` : ""}`}><motion.a className="route-portal" href={href} onClick={navigate} aria-label={label} whileHover={{ x: side === "right" ? -6 : 6 }} whileTap={{ scale: .96 }}>{side === "left" && <i aria-hidden="true">←</i>}<strong>{label}</strong>{side === "right" && <i aria-hidden="true">→</i>}</motion.a></div></>;
 }
