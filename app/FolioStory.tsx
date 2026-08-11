@@ -2,7 +2,7 @@
 
 import { AnimatePresence, motion, useReducedMotion, useScroll, useSpring, useTransform } from "framer-motion";
 import Image from "next/image";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { RoutePortal, RouteTransitionLink } from "./RouteTransition";
 
 const stories = [
@@ -66,11 +66,16 @@ function ProductFrame({ src, alt, eager = false }: { src: string; alt: string; e
 
 export function FolioStory() {
   const [activeStory, setActiveStory] = useState(0);
+  const storyGridRef = useRef<HTMLDivElement>(null);
   const reduceMotion = useReducedMotion();
   const { scrollYProgress } = useScroll();
+  const { scrollYProgress: storyScrollProgress } = useScroll({ target: storyGridRef, offset: ["start end", "end start"] });
   const progress = useSpring(scrollYProgress, { stiffness: 110, damping: 28, mass: .35 });
   const heroY = useTransform(scrollYProgress, [0, .13], [0, reduceMotion ? 0 : 90]);
   const heroScale = useTransform(scrollYProgress, [0, .13], [1, reduceMotion ? 1 : .95]);
+  const storyScreenY = useTransform(storyScrollProgress, [0, .5, 1], [reduceMotion ? 0 : 58, 0, reduceMotion ? 0 : -58]);
+  const storyScreenScale = useTransform(storyScrollProgress, [0, .5, 1], [reduceMotion ? 1 : .965, reduceMotion ? 1 : 1.015, reduceMotion ? 1 : .965]);
+  const storyScreenRotateX = useTransform(storyScrollProgress, [0, .5, 1], [reduceMotion ? 0 : 2.2, 0, reduceMotion ? 0 : -2.2]);
 
   return (
     <main>
@@ -110,7 +115,7 @@ export function FolioStory() {
 
       <section className="story" id="parcours">
         <div className="story__intro"><span className="section-index">01 — Le parcours réel</span><h2>Quatre écrans.<br />Une journée plus légère.</h2><p>Faites défiler, puis ouvrez la démo : chaque écran montré ici appartient au logiciel fonctionnel.</p></div>
-        <div className="story__grid">
+        <div className="story__grid" ref={storyGridRef}>
           <div className="story__copy">
             {stories.map((item, index) => (
               <motion.article
@@ -125,14 +130,17 @@ export function FolioStory() {
             ))}
           </div>
           <div className="story__sticky" aria-live="polite">
-            <div className="story__screen">
-              <AnimatePresence mode="wait">
-                <motion.div key={stories[activeStory].id} initial={{ opacity: 0, y: 22, scale: .985 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: -14, scale: .99 }} transition={{ duration: reduceMotion ? 0 : .45, ease: [0.16, 1, 0.3, 1] }}>
-                  <ProductFrame src={stories[activeStory].image} alt={stories[activeStory].alt} />
-                </motion.div>
-              </AnimatePresence>
-            </div>
-            <div className="story__counter"><span>0{activeStory + 1}</span><i>{stories.map((_, index) => <b className={index <= activeStory ? "active" : ""} key={index} />)}</i><span>04</span></div>
+            <motion.div className="story__visual-motion" style={{ y: storyScreenY, scale: storyScreenScale, rotateX: storyScreenRotateX }}>
+              <div className="story__screen">
+                <AnimatePresence mode="wait">
+                  <motion.div key={stories[activeStory].id} initial={{ opacity: 0, y: 34, scale: .97, filter: "blur(5px)" }} animate={{ opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }} exit={{ opacity: 0, y: -24, scale: .985, filter: "blur(3px)" }} transition={{ duration: reduceMotion ? 0 : .62, ease: [0.16, 1, 0.3, 1] }}>
+                    <ProductFrame src={stories[activeStory].image} alt={stories[activeStory].alt} />
+                    {!reduceMotion && <motion.i className="story__screen-light" aria-hidden="true" initial={{ x: "-130%" }} animate={{ x: "140%" }} transition={{ duration: .9, ease: [0.16, 1, 0.3, 1] }} />}
+                  </motion.div>
+                </AnimatePresence>
+              </div>
+              <div className="story__counter"><span>0{activeStory + 1}</span><i>{stories.map((_, index) => <b className={index <= activeStory ? "active" : ""} key={index} />)}</i><span>04</span></div>
+            </motion.div>
           </div>
         </div>
       </section>
