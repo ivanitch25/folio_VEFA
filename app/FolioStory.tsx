@@ -1,8 +1,8 @@
 "use client";
 
-import { AnimatePresence, motion, useReducedMotion, useScroll, useSpring, useTransform } from "framer-motion";
+import { AnimatePresence, motion, useMotionValueEvent, useReducedMotion, useScroll, useSpring, useTransform } from "framer-motion";
 import Image from "next/image";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { RoutePortal, RouteTransitionLink } from "./RouteTransition";
 
 const stories = [
@@ -67,7 +67,7 @@ function ProductFrame({ src, alt, eager = false }: { src: string; alt: string; e
         <span /><span /><span />
         <em>Écran réel · données de démonstration</em>
       </div>
-      <Image src={src} alt={alt} width={1280} height={720} priority={eager} unoptimized />
+      <Image src={src} alt={alt} width={2560} height={1440} priority={eager} unoptimized />
     </div>
   );
 }
@@ -93,7 +93,7 @@ function Manifesto() {
     <section className="manifesto" id="vision">
       <div className="manifesto__head">
         <div><span className="section-index">00 — Le vrai coût</span><p>Ce ne sont pas seulement les dossiers difficiles qui prennent du temps.</p></div>
-        <motion.h2 initial={{ opacity: 0, y: 35 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: .45 }} transition={{ duration: .7, ease: [0.16, 1, 0.3, 1] }}>Le travail se disperse dans <em>la répétition.</em></motion.h2>
+        <motion.h2 initial={{ opacity: 0, y: 35 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: .45 }} transition={{ duration: .7, ease: [0.16, 1, 0.3, 1] }}>Le travail se disperse <span>dans <em>la répétition.</em></span></motion.h2>
       </div>
       <div className="manifesto__routine" aria-label="Les cinq gestes répétitifs pris en charge par Folio">
         {routineSteps.map((step, index) => <RoutineCard key={step.label} {...step} index={index} />)}
@@ -109,12 +109,15 @@ function Manifesto() {
 
 export function FolioStory() {
   const [{ index: activeStory, direction: storyDirection }, setStoryState] = useState({ index: 0, direction: 1 });
+  const storySequenceRef = useRef<HTMLDivElement>(null);
   const reduceMotion = useReducedMotion();
   const { scrollYProgress } = useScroll();
+  const { scrollYProgress: storyProgress } = useScroll({ target: storySequenceRef, offset: ["start start", "end end"] });
   const progress = useSpring(scrollYProgress, { stiffness: 110, damping: 28, mass: .35 });
   const heroY = useTransform(scrollYProgress, [0, .13], [0, reduceMotion ? 0 : 90]);
   const heroScale = useTransform(scrollYProgress, [0, .13], [1, reduceMotion ? 1 : .95]);
   const selectStory = (index: number) => setStoryState(previous => previous.index === index ? previous : { index, direction: index > previous.index ? 1 : -1 });
+  useMotionValueEvent(storyProgress, "change", value => selectStory(Math.min(stories.length - 1, Math.round(value * (stories.length - 1)))));
 
   return (
     <main>
@@ -149,7 +152,7 @@ export function FolioStory() {
       <section className="story">
         <div className="story__intro"><span className="section-index">01 — Le parcours réel</span><h2>Quatre écrans.<br />Une journée plus légère.</h2><p>Faites défiler, puis ouvrez la démo : chaque écran montré ici appartient au logiciel fonctionnel.</p></div>
         <span className="story__anchor" id="parcours" aria-hidden="true" />
-        <div className="story__sequence">
+        <div className="story__sequence" ref={storySequenceRef}>
           <div className="story__stage" aria-live="polite">
             <div className="story__copy">
               <AnimatePresence mode="wait" custom={storyDirection} initial={false}>
@@ -175,25 +178,21 @@ export function FolioStory() {
                 <span><i />Capture réelle du logiciel</span>
               </div>
               <div className="story__screen">
-                <AnimatePresence mode="sync" custom={storyDirection} initial={false}>
+                {stories.map((storyItem, index) => (
                   <motion.div
                     className="story__screen-layer"
-                    key={stories[activeStory].id}
-                    custom={storyDirection}
-                    initial={{ opacity: 0, x: reduceMotion ? 0 : storyDirection * 18, scale: reduceMotion ? 1 : 1.018, filter: reduceMotion ? "none" : "blur(5px)", clipPath: storyDirection > 0 ? "inset(0 0 0 10% round 13px)" : "inset(0 10% 0 0 round 13px)" }}
-                    animate={{ opacity: 1, x: 0, scale: 1, filter: "blur(0px)", clipPath: "inset(0 0 0 0 round 13px)", zIndex: 2 }}
-                    exit={{ opacity: 0, x: reduceMotion ? 0 : storyDirection * -7, scale: reduceMotion ? 1 : .988, filter: reduceMotion ? "none" : "blur(3px)", zIndex: 1 }}
-                    transition={{ duration: reduceMotion ? 0 : .58, ease: [0.16, 1, 0.3, 1] }}
+                    key={storyItem.id}
+                    initial={false}
+                    animate={{ opacity: index === activeStory ? 1 : 0, scale: index === activeStory || reduceMotion ? 1 : .992, zIndex: index === activeStory ? 2 : 1 }}
+                    transition={{ duration: reduceMotion ? 0 : .44, ease: [0.22, 1, 0.36, 1] }}
+                    aria-hidden={index !== activeStory}
                   >
-                    <ProductFrame src={stories[activeStory].image} alt={stories[activeStory].alt} />
+                    <ProductFrame src={storyItem.image} alt={index === activeStory ? storyItem.alt : ""} eager />
                   </motion.div>
-                </AnimatePresence>
+                ))}
               </div>
               <div className="story__counter"><span>0{activeStory + 1}</span><i>{stories.map((_, index) => <b className={index <= activeStory ? "active" : ""} key={index} />)}</i><span>04</span></div>
             </div>
-          </div>
-          <div className="story__triggers" aria-hidden="true">
-            {stories.map((item, index) => <motion.div key={item.id} onViewportEnter={() => selectStory(index)} viewport={{ amount: .55 }} />)}
           </div>
         </div>
         <div className="story__mobile-list">
