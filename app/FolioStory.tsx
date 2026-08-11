@@ -75,7 +75,7 @@ export function FolioStory() {
   return (
     <main>
       <motion.div className="scroll-progress" style={{ scaleX: progress }} />
-      <RoutePortal href="/demo" side="right" eyebrow="Explorer" label="Démo interactive" />
+      <RoutePortal href="/demo" side="right" label="Voir la démo" />
       <header className="site-header">
         <a className="wordmark" href="#haut" aria-label="Folio VEFA, accueil"><Mark /><span>Folio <b>VEFA</b></span></a>
         <nav aria-label="Navigation principale">

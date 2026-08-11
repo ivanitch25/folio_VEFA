@@ -136,17 +136,13 @@ button, input { font: inherit; }
 .text-link:hover { color: var(--accent); border-color: var(--accent); }
 
 .route-portal-shell { position: fixed; z-index: 90; top: 50%; transform: translateY(-50%); }
-.route-portal-shell--right { right: 13px; }
-.route-portal-shell--left { left: 13px; }
-.route-portal { position: relative; width: 52px; min-height: 178px; padding: 14px 8px 10px; border-radius: 26px; background: rgba(20, 33, 28, .94); color: white; text-decoration: none; display: flex; flex-direction: column; align-items: center; justify-content: space-between; gap: 11px; border: 1px solid rgba(255,255,255,.13); box-shadow: 0 18px 45px rgba(14,24,20,.22); backdrop-filter: blur(12px); }
-.route-portal::before { content: ""; position: absolute; inset: 5px; border: 1px solid rgba(255,255,255,.06); border-radius: 22px; pointer-events: none; }
-.route-portal__eyebrow { writing-mode: vertical-rl; transform: rotate(180deg); color: #82938a; text-transform: uppercase; letter-spacing: .17em; font-size: 6px; font-weight: 760; }
-.route-portal strong { writing-mode: vertical-rl; transform: rotate(180deg); font-size: 8px; line-height: 1; letter-spacing: .035em; font-weight: 660; }
-.route-portal i { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; background: var(--accent); color: white; font: normal 18px/1 var(--sans); box-shadow: 0 7px 18px rgba(229, 89, 61, .3); transition: transform .22s ease; }
-.route-portal:hover i { transform: scale(1.08); }
-.route-portal-shell--left .route-portal { background: rgba(245,244,239,.96); color: var(--ink); border-color: rgba(20,33,28,.12); box-shadow: 0 18px 45px rgba(0,0,0,.18); }
-.route-portal-shell--left .route-portal::before { border-color: rgba(20,33,28,.06); }
-.route-portal-shell--left .route-portal__eyebrow { color: #77847d; }
+.route-portal-shell--right { right: 22px; }
+.route-portal-shell--left { left: 22px; }
+.route-portal { min-width: 176px; height: 72px; padding: 8px 9px 8px 22px; border-radius: 19px; background: rgba(20, 33, 28, .95); color: white; text-decoration: none; display: flex; align-items: center; justify-content: space-between; gap: 17px; border: 1px solid rgba(255,255,255,.12); box-shadow: 0 18px 45px rgba(14,24,20,.2); backdrop-filter: blur(12px); }
+.route-portal strong { white-space: nowrap; font-size: 11px; line-height: 1; letter-spacing: .015em; font-weight: 680; }
+.route-portal i { width: 54px; height: 54px; flex: 0 0 54px; border-radius: 14px; display: grid; place-items: center; background: var(--accent); color: white; font: normal 34px/1 var(--sans); box-shadow: 0 8px 20px rgba(229, 89, 61, .28); transition: transform .22s ease; }
+.route-portal:hover i { transform: scale(1.06); }
+.route-portal-shell--left .route-portal { padding: 8px 22px 8px 9px; background: rgba(245,244,239,.96); color: var(--ink); border-color: rgba(20,33,28,.12); box-shadow: 0 18px 45px rgba(0,0,0,.18); }
 .route-wipe { position: fixed; z-index: 500; inset: 0; background: var(--ink); color: white; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 17px; }
 .route-wipe::before, .route-wipe::after { content: ""; position: absolute; border: 1px solid rgba(255,255,255,.075); border-radius: 50%; }
 .route-wipe::before { width: 360px; height: 360px; }
@@ -201,12 +197,13 @@ footer > span { text-align: right; }
 }
 
 @media (max-width: 640px) {
-  .route-portal-shell { top: auto; bottom: 20px; transform: none; }
+  .route-portal-shell { top: auto; bottom: 18px; transform: none; }
   .route-portal-shell--right { right: 16px; }
   .route-portal-shell--left { left: 16px; }
-  .route-portal { width: 47px; min-height: 47px; height: 47px; padding: 6px; border-radius: 50%; }
-  .route-portal::before, .route-portal__eyebrow, .route-portal strong { display: none; }
-  .route-portal i { width: 35px; height: 35px; }
+  .route-portal, .route-portal-shell--left .route-portal { min-width: 151px; height: 58px; padding: 7px 8px 7px 17px; border-radius: 16px; gap: 12px; }
+  .route-portal-shell--left .route-portal { padding: 7px 17px 7px 8px; }
+  .route-portal strong { font-size: 10px; }
+  .route-portal i { width: 44px; height: 44px; flex-basis: 44px; border-radius: 12px; font-size: 27px; }
   .site-header { height: 72px; padding: 0 18px; }
   .nav-cta { padding: 9px 11px; }
   .nav-cta span { display: none; }
