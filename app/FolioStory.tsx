@@ -3,7 +3,7 @@
 import { AnimatePresence, motion, useMotionValueEvent, useReducedMotion, useScroll, useSpring, useTransform } from "framer-motion";
 import Image from "next/image";
 import { useRef, useState } from "react";
-import { RoutePortal, RouteTransitionLink } from "./RouteTransition";
+import { RouteTransitionLink } from "./RouteTransition";
 
 const stories = [
   {
@@ -117,12 +117,14 @@ export function FolioStory() {
   const heroY = useTransform(scrollYProgress, [0, .13], [0, reduceMotion ? 0 : 90]);
   const heroScale = useTransform(scrollYProgress, [0, .13], [1, reduceMotion ? 1 : .95]);
   const selectStory = (index: number) => setStoryState(previous => previous.index === index ? previous : { index, direction: index > previous.index ? 1 : -1 });
-  useMotionValueEvent(storyProgress, "change", value => selectStory(Math.min(stories.length - 1, Math.round(value * (stories.length - 1)))));
+  useMotionValueEvent(storyProgress, "change", value => {
+    const plateau = Math.min(stories.length - 1, Math.floor(Math.min(value, .9999) * stories.length));
+    selectStory(plateau);
+  });
 
   return (
     <main>
       <motion.div className="scroll-progress" style={{ scaleX: progress }} />
-      <RoutePortal href="/demo" side="right" label="Voir la démo" />
       <header className="site-header">
         <a className="wordmark" href="#haut" aria-label="Folio VEFA, accueil"><Mark /><span>Folio <b>VEFA</b></span></a>
         <nav aria-label="Navigation principale">
@@ -134,13 +136,13 @@ export function FolioStory() {
       </header>
 
       <section className="hero" id="haut">
-        <motion.div className="hero__copy" initial={{ opacity: 0, y: 22 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .75, ease: [0.16, 1, 0.3, 1] }}>
+        <div className="hero__copy">
           <div className="hero__eyebrow"><span>Conçu avec le métier</span><i />Logiciel local pour comptables VEFA</div>
           <h1><span>Moins de dossiers à fouiller.</span><em>Plus de travail déjà prêt.</em></h1>
           <p>Folio réunit chaque client, prépare ses appels de fonds et génère ses courriers personnalisés — sans envoyer ses données sensibles sur le web.</p>
           <div className="hero__actions"><RouteTransitionLink className="primary-link" href="/demo" side="right">Manipuler le logiciel <span aria-hidden="true">↗</span></RouteTransitionLink><a className="text-link" href="#parcours">Voir le parcours <span aria-hidden="true">↓</span></a><span className="local-proof"><i />Démo fictive · produit réel en local</span></div>
-        </motion.div>
-        <motion.div className="hero__product" style={{ y: heroY, scale: heroScale }} initial={{ opacity: 0, y: 34 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: .25, duration: .9, ease: [0.16, 1, 0.3, 1] }}>
+        </div>
+        <motion.div className="hero__product" style={{ y: heroY, scale: heroScale }} initial={false}>
           <ProductFrame src="/screens/dashboard.png" alt={stories[0].alt} eager />
           <span className="hero__annotation hero__annotation--left">Seulement 4 dossiers à traiter</span>
           <span className="hero__annotation hero__annotation--right">143 dossiers silencieux</span>
@@ -149,54 +151,37 @@ export function FolioStory() {
 
       <Manifesto />
 
-      <section className="story">
+      <section className="story" id="parcours">
         <div className="story__intro"><span className="section-index">01 — Le parcours réel</span><h2>Quatre écrans.<br />Une journée plus légère.</h2><p>Faites défiler, puis ouvrez la démo : chaque écran montré ici appartient au logiciel fonctionnel.</p></div>
-        <span className="story__anchor" id="parcours" aria-hidden="true" />
         <div className="story__sequence" ref={storySequenceRef}>
           <div className="story__stage" aria-live="polite">
-            <div className="story__copy">
-              <AnimatePresence mode="wait" custom={storyDirection} initial={false}>
-                <motion.article
-                  className="story-step story-step--active"
-                  key={stories[activeStory].id}
-                  custom={storyDirection}
-                  initial={{ opacity: 0, y: reduceMotion ? 0 : storyDirection * 24, filter: reduceMotion ? "none" : "blur(5px)" }}
-                  animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-                  exit={{ opacity: 0, y: reduceMotion ? 0 : storyDirection * -18, filter: reduceMotion ? "none" : "blur(4px)" }}
-                  transition={{ duration: reduceMotion ? 0 : .42, ease: [0.16, 1, 0.3, 1] }}
-                >
-                  <span className="story-step__number">{stories[activeStory].number}</span>
-                  <div><span className="story-step__kicker">{stories[activeStory].kicker}</span><h3>{stories[activeStory].title}</h3><p>{stories[activeStory].body}</p><strong><i />{stories[activeStory].proof}</strong></div>
-                </motion.article>
-              </AnimatePresence>
-            </div>
-            <div className="story__visual">
-              <div className="story__visual-head">
-                <AnimatePresence mode="wait">
-                  <motion.div key={stories[activeStory].id} initial={{ opacity: 0, x: 18 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -12 }} transition={{ duration: reduceMotion ? 0 : .3 }}><b>{stories[activeStory].number}</b><span>{stories[activeStory].kicker}</span></motion.div>
-                </AnimatePresence>
-                <span><i />Capture réelle du logiciel</span>
-              </div>
-              <div className="story__screen">
-                {stories.map((storyItem, index) => (
-                  <motion.div
-                    className="story__screen-layer"
-                    key={storyItem.id}
-                    initial={false}
-                    animate={{ opacity: index === activeStory ? 1 : 0, scale: index === activeStory || reduceMotion ? 1 : .992, zIndex: index === activeStory ? 2 : 1 }}
-                    transition={{ duration: reduceMotion ? 0 : .44, ease: [0.22, 1, 0.36, 1] }}
-                    aria-hidden={index !== activeStory}
-                  >
-                    <ProductFrame src={storyItem.image} alt={index === activeStory ? storyItem.alt : ""} eager />
-                  </motion.div>
-                ))}
-              </div>
-              <div className="story__counter"><span>0{activeStory + 1}</span><i>{stories.map((_, index) => <b className={index <= activeStory ? "active" : ""} key={index} />)}</i><span>04</span></div>
-            </div>
+            <AnimatePresence initial={false} mode="sync" custom={storyDirection}>
+              <motion.article
+                className="story__scene"
+                key={stories[activeStory].id}
+                custom={storyDirection}
+                initial={{ opacity: 0, y: reduceMotion ? 0 : storyDirection * 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: reduceMotion ? 0 : storyDirection * -8 }}
+                transition={{ duration: reduceMotion ? 0 : .3, ease: [0.22, 1, 0.36, 1] }}
+              >
+                <div className="story__copy">
+                  <div className="story-step story-step--active">
+                    <span className="story-step__number">{stories[activeStory].number}</span>
+                    <div><span className="story-step__kicker">{stories[activeStory].kicker}</span><h3>{stories[activeStory].title}</h3><p>{stories[activeStory].body}</p><strong><i />{stories[activeStory].proof}</strong></div>
+                  </div>
+                </div>
+                <div className="story__visual">
+                  <div className="story__visual-head"><div><b>{stories[activeStory].number}</b><span>{stories[activeStory].kicker}</span></div><span><i />Capture réelle du logiciel</span></div>
+                  <div className="story__screen"><ProductFrame src={stories[activeStory].image} alt={stories[activeStory].alt} eager /></div>
+                  <div className="story__counter"><span>0{activeStory + 1}</span><i>{stories.map((_, index) => <b className={index <= activeStory ? "active" : ""} key={index} />)}</i><span>04</span></div>
+                </div>
+              </motion.article>
+            </AnimatePresence>
           </div>
         </div>
         <div className="story__mobile-list">
-          {stories.map(item => <article className="story-mobile-step" key={item.id}><div><span className="story-step__number">{item.number}</span><span className="story-step__kicker">{item.kicker}</span></div><h3>{item.title}</h3><p>{item.body}</p><strong><i />{item.proof}</strong><ProductFrame src={item.image} alt={item.alt} /></article>)}
+          {stories.map(item => <article className="story-mobile-step" key={item.id}><div className="story-mobile-step__head"><span className="story-step__number">{item.number}</span><span className="story-step__kicker">{item.kicker}</span></div><h3>{item.title}</h3><p>{item.body}</p><strong><i />{item.proof}</strong><ProductFrame src={item.image} alt={item.alt} /></article>)}
         </div>
       </section>
 
