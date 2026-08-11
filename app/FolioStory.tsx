@@ -40,8 +40,8 @@ const stories = [
     number: "04",
     kicker: "Confidentialité",
     title: "Les données ne prennent jamais le chemin du site web.",
-    body: "Cette vitrine présente le produit. Le logiciel métier, lui, s’installe sur le poste du comptable et conserve clients, montants, documents et sauvegardes dans son environnement local.",
-    proof: "Aucun compte cloud. Aucune base clients chez l’éditeur.",
+    body: "La démo web permet d’essayer les parcours avec des données fictives et temporaires. Le logiciel métier, lui, s’installe sur le poste du comptable et conserve clients, montants, documents et sauvegardes dans son environnement local.",
+    proof: "Démo sans données réelles. Produit métier sans base clients distante.",
     image: "/screens/confidentialite.png",
     alt: "Écran réel des paramètres de confidentialité et de stockage local de Folio VEFA",
   },
@@ -56,7 +56,7 @@ function ProductFrame({ src, alt, eager = false }: { src: string; alt: string; e
     <div className="product-frame">
       <div className="product-frame__bar">
         <span /><span /><span />
-        <em>Logiciel local · données de démonstration</em>
+        <em>Écran réel · données de démonstration</em>
       </div>
       <Image src={src} alt={alt} width={1280} height={720} priority={eager} unoptimized />
     </div>
@@ -81,7 +81,7 @@ export function FolioStory() {
           <a href="#confidentialite">Confidentialité</a>
           <a href="#vision">La promesse</a>
         </nav>
-        <a className="nav-cta" href="#parcours">Découvrir le logiciel <span aria-hidden="true">↘</span></a>
+        <a className="nav-cta" href="/demo">Essayer la démo <span aria-hidden="true">↗</span></a>
       </header>
 
       <section className="hero" id="haut">
@@ -89,7 +89,7 @@ export function FolioStory() {
           <div className="hero__eyebrow"><span>Conçu avec le métier</span><i />Logiciel local pour comptables VEFA</div>
           <h1>Moins de dossiers à fouiller.<br /><em>Plus de travail déjà prêt.</em></h1>
           <p>Folio réunit chaque client, prépare ses appels de fonds et génère ses courriers personnalisés — sans envoyer ses données sensibles sur le web.</p>
-          <div className="hero__actions"><a className="primary-link" href="#parcours">Voir le gain au quotidien <span aria-hidden="true">↓</span></a><span className="local-proof"><i />Données stockées sur votre poste</span></div>
+          <div className="hero__actions"><a className="primary-link" href="/demo">Manipuler le logiciel <span aria-hidden="true">↗</span></a><a className="text-link" href="#parcours">Voir le parcours <span aria-hidden="true">↓</span></a><span className="local-proof"><i />Démo fictive · produit réel en local</span></div>
         </motion.div>
         <motion.div className="hero__product" style={{ y: heroY, scale: heroScale }} initial={{ opacity: 0, y: 34 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: .25, duration: .9, ease: [0.16, 1, 0.3, 1] }}>
           <ProductFrame src="/screens/dashboard.png" alt={stories[0].alt} eager />
@@ -107,7 +107,7 @@ export function FolioStory() {
       </section>
 
       <section className="story" id="parcours">
-        <div className="story__intro"><span className="section-index">01 — Le parcours réel</span><h2>Quatre écrans.<br />Une journée plus légère.</h2><p>Faites défiler : chaque écran montré ici appartient au logiciel fonctionnel.</p></div>
+        <div className="story__intro"><span className="section-index">01 — Le parcours réel</span><h2>Quatre écrans.<br />Une journée plus légère.</h2><p>Faites défiler, puis ouvrez la démo : chaque écran montré ici appartient au logiciel fonctionnel.</p></div>
         <div className="story__grid">
           <div className="story__copy">
             {stories.map((item, index) => (
@@ -138,7 +138,7 @@ export function FolioStory() {
       <section className="privacy" id="confidentialite">
         <div className="privacy__headline"><span className="section-index">02 — La frontière</span><h2>Le site vous présente Folio.<br /><em>Il ne voit jamais vos clients.</em></h2></div>
         <div className="privacy__split">
-          <article><span className="privacy__label">Ici, sur le site public</span><h3>Une vitrine, rien de plus.</h3><ul><li>Présentation du logiciel</li><li>Captures sur données fictives</li><li>Documentation et téléchargement</li></ul><small>Aucune saisie client · aucune base métier</small></article>
+          <article><span className="privacy__label">Ici, sur le site public</span><h3>Une démo isolée.</h3><ul><li>Parcours interactifs du logiciel</li><li>Données entièrement fictives</li><li>Aucune conservation après la visite</li></ul><small>Aucune donnée client réelle · aucune base métier</small></article>
           <div className="privacy__divider"><span>≠</span></div>
           <article className="privacy__local"><span className="privacy__label">Là, sur le poste du comptable</span><h3>Le vrai travail, en local.</h3><ul><li>Clients, lots et montants</li><li>Appels, paiements et documents</li><li>Sauvegardes choisies par l’utilisateur</li></ul><small><i />Fonctionne sans connexion Internet</small></article>
         </div>
@@ -154,10 +154,10 @@ export function FolioStory() {
         <span>Folio VEFA</span>
         <h2>Le logiciel prépare.<br /><em>Vous décidez.</em></h2>
         <p>Un outil local, pensé autour de chaque client et des documents que vous devez réellement produire.</p>
-        <a className="primary-link primary-link--light" href="#haut">Revoir le parcours <span aria-hidden="true">↑</span></a>
+        <a className="primary-link primary-link--light" href="/demo">Ouvrir la démo interactive <span aria-hidden="true">↗</span></a>
       </section>
 
-      <footer><a className="wordmark wordmark--footer" href="#haut"><Mark /><span>Folio <b>VEFA</b></span></a><p>Logiciel local d’assistance comptable VEFA.</p><span>Les captures utilisent exclusivement des données fictives.</span></footer>
+      <footer><a className="wordmark wordmark--footer" href="#haut"><Mark /><span>Folio <b>VEFA</b></span></a><p>Logiciel local d’assistance comptable VEFA.</p><span>La démo utilise exclusivement des données fictives.</span></footer>
     </main>
   );
 }
