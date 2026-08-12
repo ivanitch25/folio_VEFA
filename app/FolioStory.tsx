@@ -61,6 +61,7 @@ function Mark() {
 }
 
 const waitlistAction = "https://docs.google.com/forms/d/e/1FAIpQLSfFtTb_c2ShE2SG--JynTMoUvwAR7JpAsxTVg8eHKlvBdFqaA/formResponse";
+const downloadUrl = "https://drive.google.com/file/d/10slwBUhRM8_S2WnY5FsIzoup1oJUw9aZ/view?usp=sharing";
 
 function WaitlistForm() {
   const [status, setStatus] = useState<"idle" | "sending" | "sent">("idle");
@@ -268,6 +269,10 @@ export function FolioStory() {
           <span className="waitlist__availability"><i />Ouvert aux premières invitations</span>
           <p>Folio n’est pas encore vendu. Chaque accès est accordé manuellement, à une personne à la fois, pour accompagner les premiers usages correctement.</p>
           <WaitlistForm />
+          <div className="waitlist-download">
+            <div><strong>Accès déjà validé ?</strong><small>Google Drive vérifie que votre adresse fait partie des personnes autorisées.</small></div>
+            <a href={downloadUrl} target="_blank" rel="noreferrer">Télécharger Folio <span aria-hidden="true">↗</span></a>
+          </div>
         </div>
       </section>
 
