@@ -2,7 +2,7 @@
 
 import { AnimatePresence, motion, useMotionValueEvent, useReducedMotion, useScroll, useSpring, useTransform } from "framer-motion";
 import Image from "next/image";
-import { useRef, useState } from "react";
+import { FormEvent, useRef, useState } from "react";
 import { RoutePortal, RouteTransitionLink } from "./RouteTransition";
 
 const stories = [
@@ -58,6 +58,59 @@ const routineSteps = [
 
 function Mark() {
   return <span className="folio-mark" aria-hidden="true">F</span>;
+}
+
+const waitlistAction = "https://docs.google.com/forms/d/e/1FAIpQLSfFtTb_c2ShE2SG--JynTMoUvwAR7JpAsxTVg8eHKlvBdFqaA/formResponse";
+
+function WaitlistForm() {
+  const [status, setStatus] = useState<"idle" | "sending" | "sent">("idle");
+  const submitted = useRef(false);
+
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+    const form = event.currentTarget;
+    const trap = form.elements.namedItem("website") as HTMLInputElement | null;
+    if (trap?.value) {
+      event.preventDefault();
+      return;
+    }
+    submitted.current = true;
+    setStatus("sending");
+  };
+
+  if (status === "sent") {
+    return (
+      <div className="waitlist-form__success" role="status">
+        <span aria-hidden="true">✓</span>
+        <div><strong>Votre demande est enregistrée.</strong><p>Nous vous recontacterons lorsque votre accès sera prêt.</p></div>
+      </div>
+    );
+  }
+
+  return (
+    <>
+      <form className="waitlist-form" action={waitlistAction} method="POST" target="folio-waitlist-response" onSubmit={handleSubmit}>
+        <label htmlFor="waitlist-email">Votre adresse e-mail</label>
+        <div className="waitlist-form__row">
+          <input id="waitlist-email" name="entry.1112742353" type="email" inputMode="email" autoComplete="email" placeholder="vous@cabinet.fr" required />
+          <button type="submit" disabled={status === "sending"}>{status === "sending" ? "Envoi…" : "Rejoindre la liste"}<span aria-hidden="true">→</span></button>
+        </div>
+        <input className="waitlist-form__trap" name="website" type="text" tabIndex={-1} autoComplete="off" aria-hidden="true" />
+        <small>Une adresse, uniquement pour vous recontacter au sujet de Folio. Aucun envoi automatique.</small>
+      </form>
+      <iframe
+        className="waitlist-form__target"
+        name="folio-waitlist-response"
+        title="Confirmation d’inscription"
+        aria-hidden="true"
+        onLoad={() => {
+          if (submitted.current) {
+            submitted.current = false;
+            setStatus("sent");
+          }
+        }}
+      />
+    </>
+  );
 }
 
 function ProductFrame({ src, alt, eager = false }: { src: string; alt: string; eager?: boolean }) {
@@ -137,6 +190,7 @@ export function FolioStory() {
           <a href="#parcours">Le quotidien</a>
           <a href="#confidentialite">Confidentialité</a>
           <a href="#vision">La promesse</a>
+          <a href="#liste-attente">Accès</a>
         </nav>
         <RouteTransitionLink className="nav-cta" href="/demo" side="right">Essayer la démo <span aria-hidden="true">↗</span></RouteTransitionLink>
       </header>
@@ -203,6 +257,18 @@ export function FolioStory() {
       <section className="outcome">
         <span className="section-index">03 — Ce qui change</span>
         <div className="outcome__grid"><h2>Moins de clics.<br />Moins de doutes.<br /><em>Moins de choses à garder en tête.</em></h2><div className="outcome__list"><div><b>01</b><span><strong>Une seule source</strong><small>La fiche client remplace la chasse aux informations.</small></span></div><div><b>02</b><span><strong>Une seule validation</strong><small>Le publipostage prépare chaque document sans copier-coller.</small></span></div><div><b>03</b><span><strong>Une seule liste</strong><small>Les exceptions viennent au comptable, pas l’inverse.</small></span></div></div></div>
+      </section>
+
+      <section className="waitlist" id="liste-attente">
+        <div className="waitlist__intro">
+          <span className="section-index">04 — Accès sur invitation</span>
+          <h2>Rejoindre la<br /><em>liste d’attente.</em></h2>
+        </div>
+        <div className="waitlist__panel">
+          <span className="waitlist__availability"><i />Ouvert aux premières invitations</span>
+          <p>Folio n’est pas encore vendu. Chaque accès est accordé manuellement, à une personne à la fois, pour accompagner les premiers usages correctement.</p>
+          <WaitlistForm />
+        </div>
       </section>
 
       <section className="closing">
