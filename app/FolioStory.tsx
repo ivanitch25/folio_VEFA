@@ -144,7 +144,7 @@ export function FolioStory() {
       <section className="hero" id="haut">
         <div className="hero__copy">
           <div className="hero__eyebrow"><span>Conçu avec le métier</span><i />Logiciel local pour comptables VEFA</div>
-          <h1><span>Moins de dossiers à fouiller.</span><em>Plus de travail déjà prêt.</em></h1>
+          <h1><span><b>Moins de dossiers</b> <b>à fouiller.</b></span><em><b>Plus de travail</b> <b>déjà prêt.</b></em></h1>
           <p>Folio réunit chaque client, prépare ses appels de fonds et génère ses courriers personnalisés — sans envoyer ses données sensibles sur le web.</p>
           <div className="hero__actions"><RouteTransitionLink className="primary-link" href="/demo" side="right">Manipuler le logiciel <span aria-hidden="true">↗</span></RouteTransitionLink><a className="text-link" href="#parcours">Voir le parcours <span aria-hidden="true">↓</span></a><span className="local-proof"><i />Démo fictive · produit réel en local</span></div>
         </div>
